@@ -22,10 +22,12 @@ const (
 	HousingFundBaseTypeId = 22
 	HousingFundRateTypeId = 14
 
-	BRSplitSymblo   = "<br>"
-	PercentSymblo   = "%"
-	CommaSymblo     = "、"
-	DigitalRegMatch = `\d`
+	BRSplitSymblo             = "<br>"
+	CommaSymblo               = "、"
+	DashSymblo                = "-"
+	DigitalRegMatch           = `[0-9.%]`
+	WorkInjuryDigitalRegMatch = `[0-9.%、-]`
+	PercentSymblo             = "%"
 )
 
 type Resolver interface {
@@ -85,10 +87,7 @@ func printNotFoundSplitSymbloError(tag string, splitSymblo string) (float32, flo
 	return 0, 0, errors.New(fmt.Sprintf("Can not found split string: %s in the target string: %s", splitSymblo, tag))
 }
 
-type PensionBaseResolver struct {
-}
-
-func (r *PensionBaseResolver) Resolve(tag string) (maxBase float32, minBase float32, err error) {
+func commonBaseResolve(tag string) (maxBase float32, minBase float32, err error) {
 	if len(tag) == 0 {
 		return printTagIsEmptyError(tag)
 	}
@@ -111,23 +110,27 @@ func (r *PensionBaseResolver) Resolve(tag string) (maxBase float32, minBase floa
 	maxBaseString := strings.Join(re.FindAllString(maxMinBaseArr[0], -1), "")
 	minBaseString := strings.Join(re.FindAllString(maxMinBaseArr[1], -1), "")
 
-	imaxBase, _ := strconv.Atoi(maxBaseString)
-	iminBase, _ := strconv.Atoi(minBaseString)
-	maxBase = float32(imaxBase)
-	minBase = float32(iminBase)
+	fmaxBase, err := strconv.ParseFloat(maxBaseString, 32)
+	if err != nil {
+		fmaxBase = 0.00
+	}
+
+	fminBase, err := strconv.ParseFloat(minBaseString, 32)
+	if err != nil {
+		fminBase = 0.00
+	}
+
+	maxBase = float32(fmaxBase)
+	minBase = float32(fminBase)
 
 	return maxBase, minBase, nil
 }
 
-type PensionRateResolver struct {
-}
-
-func (r *PensionRateResolver) Resolve(tag string) (companyRate float32, personalRate float32, err error) {
+func commonRateResolve(tag string) (companyRate float32, personalRate float32, err error) {
 	if len(tag) == 0 {
 		return printTagIsEmptyError(tag)
 	}
 
-	tag = strings.Replace(tag, PercentSymblo, "", -1)
 	if strings.IndexAny(tag, BRSplitSymblo) == -1 {
 		return printNotFoundSplitSymbloError(tag, BRSplitSymblo)
 	}
@@ -140,74 +143,185 @@ func (r *PensionRateResolver) Resolve(tag string) (companyRate float32, personal
 	companyRateString = strings.Join(re.FindAllString(companyRateString, -1), "")
 	personalRateString = strings.Join(re.FindAllString(personalRateString, -1), "")
 
-	icompanyRate, _ := strconv.Atoi(companyRateString)
-	ipersonalRate, _ := strconv.Atoi(personalRateString)
-	companyRate = float32(icompanyRate)
-	personalRate = float32(ipersonalRate)
+	if firstIndex := strings.Index(companyRateString, PercentSymblo); firstIndex > -1 {
+		companyRateString = companyRateString[0:firstIndex]
+	}
+
+	fcompanyRate, err := strconv.ParseFloat(companyRateString, 32)
+
+	if err != nil {
+		fcompanyRate = 0.00
+	}
+
+	if firstIndex := strings.Index(personalRateString, PercentSymblo); firstIndex > -1 {
+		personalRateString = personalRateString[0:firstIndex]
+	}
+
+	fpersonalRate, err := strconv.ParseFloat(personalRateString, 32)
+	if err != nil {
+		fpersonalRate = 0.00
+	}
+
+	companyRate = float32(fcompanyRate) / 100
+	personalRate = float32(fpersonalRate) / 100
 	return companyRate, personalRate, nil
+}
+
+type PensionBaseResolver struct {
+}
+
+func (r *PensionBaseResolver) Resolve(tag string) (maxBase float32, minBase float32, err error) {
+	return commonBaseResolve(tag)
+}
+
+type PensionRateResolver struct {
+}
+
+func (r *PensionRateResolver) Resolve(tag string) (companyRate float32, personalRate float32, err error) {
+	return commonRateResolve(tag)
 }
 
 type JoblessBaseResolver struct {
 }
 
 func (r *JoblessBaseResolver) Resolve(tag string) (maxBase float32, minBase float32, err error) {
-	return 1.0, 1.0, nil
+	return commonBaseResolve(tag)
 }
 
 type JoblessRateResolver struct {
 }
 
 func (r *JoblessRateResolver) Resolve(tag string) (companyRate float32, personalRate float32, err error) {
-	return 1.0, 1.0, nil
+	return commonRateResolve(tag)
 }
 
 type MedicalBaseResolver struct {
 }
 
 func (r *MedicalBaseResolver) Resolve(tag string) (maxBase float32, minBase float32, err error) {
-	return 1.0, 1.0, nil
+	return commonBaseResolve(tag)
 }
 
 type MedicalRateResolver struct {
 }
 
 func (r *MedicalRateResolver) Resolve(tag string) (companyRate float32, personalRate float32, err error) {
-	return 1.0, 1.0, nil
+	if len(tag) == 0 {
+		return printTagIsEmptyError(tag)
+	}
+
+	if strings.IndexAny(tag, BRSplitSymblo) == -1 {
+		return printNotFoundSplitSymbloError(tag, BRSplitSymblo)
+	}
+
+	arr := strings.Split(tag, BRSplitSymblo)
+	companyRateString := arr[0]
+	personalRateString := arr[2]
+	re := regexp.MustCompile(DigitalRegMatch)
+
+	companyRateString = strings.Join(re.FindAllString(companyRateString, -1), "")
+	if firstIndex := strings.Index(companyRateString, PercentSymblo); firstIndex > -1 {
+		companyRateString = companyRateString[0:firstIndex]
+	}
+
+	personalRateString = strings.Join(re.FindAllString(personalRateString, -1), "")
+	if firstIndex := strings.Index(personalRateString, PercentSymblo); firstIndex > -1 {
+		personalRateString = personalRateString[0:firstIndex]
+	}
+
+	fcompanyRate, err := strconv.ParseFloat(companyRateString, 32)
+	if err != nil {
+		fcompanyRate = 0.00
+	}
+
+	fpersonalRate, err := strconv.ParseFloat(personalRateString, 32)
+	if err != nil {
+		fpersonalRate = 0.00
+	}
+
+	companyRate = float32(fcompanyRate) / 100
+	personalRate = float32(fpersonalRate) / 100
+	return companyRate, personalRate, nil
 }
 
 type WorkInjuryBaseResolver struct {
 }
 
 func (r *WorkInjuryBaseResolver) Resolve(tag string) (maxBase float32, minBase float32, err error) {
-	return 1.0, 1.0, nil
+	return commonBaseResolve(tag)
 }
 
 type WorkInjuryRateResolver struct {
 }
 
 func (r *WorkInjuryRateResolver) Resolve(tag string) (companyRate float32, personalRate float32, err error) {
-	return 1.0, 1.0, nil
+	if len(tag) == 0 {
+		return printTagIsEmptyError(tag)
+	}
+	re := regexp.MustCompile(WorkInjuryDigitalRegMatch)
+	resultString := strings.Join(re.FindAllString(tag, -1), "")
+
+	if strings.IndexAny(resultString, DashSymblo) > -1 {
+		arr := strings.Split(resultString, DashSymblo)
+		companyRateString := arr[len(arr)-1]
+		if firstIndex := strings.Index(companyRateString, PercentSymblo); firstIndex > -1 {
+			companyRateString = companyRateString[0:firstIndex]
+		}
+
+		fcompanyRate, err := strconv.ParseFloat(companyRateString, 32)
+		if err != nil {
+			fcompanyRate = 0.00
+		}
+
+		companyRate = float32(fcompanyRate) / 100
+		return companyRate, 0.00, nil
+	} else if strings.IndexAny(resultString, CommaSymblo) > -1 {
+		arr := strings.Split(tag, CommaSymblo)
+		companyRateString := arr[len(arr)-1]
+		if firstIndex := strings.Index(companyRateString, PercentSymblo); firstIndex > -1 {
+			companyRateString = companyRateString[0:firstIndex]
+		}
+
+		fcompanyRate, err := strconv.ParseFloat(companyRateString, 32)
+		if err != nil {
+			fcompanyRate = 0.00
+		}
+
+		companyRate = float32(fcompanyRate) / 100
+		return companyRate, 0.00, nil
+	} else {
+		if firstIndex := strings.Index(resultString, PercentSymblo); firstIndex > -1 {
+			resultString = resultString[0:firstIndex]
+		}
+		fcompanyRate, err := strconv.ParseFloat(resultString, 32)
+		if err != nil {
+			fcompanyRate = 0.00
+		}
+
+		companyRate = float32(fcompanyRate) / 100
+		return companyRate, 0.00, nil
+	}
 }
 
 type MaternityBaseResolver struct {
 }
 
 func (r *MaternityBaseResolver) Resolve(tag string) (maxBase float32, minBase float32, err error) {
-	return 1.0, 1.0, nil
+	return commonBaseResolve(tag)
 }
 
 type MaternityRateResolver struct {
 }
 
 func (r *MaternityRateResolver) Resolve(tag string) (companyRate float32, personalRate float32, err error) {
-	return 1.0, 1.0, nil
+	return commonRateResolve(tag)
 }
 
 type HousingFundBaseResolver struct {
 }
 
 func (r *HousingFundBaseResolver) Resolve(tag string) (maxBase float32, minBase float32, err error) {
-	return 1.0, 1.0, nil
+	return commonBaseResolve(tag)
 }
 
 type HousingFundRateResolver struct {
