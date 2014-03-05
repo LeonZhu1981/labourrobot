@@ -68,7 +68,6 @@ func Test_NewResolver_CommonBase_Resolve(t *testing.T) {
 		}
 
 		maxRate, minRate, _ = r1.Resolve("缴费基数(上下限):868.2~4341")
-
 		if maxRate != 4341.00 || minRate != 868.20 {
 			t.Error("test failed")
 		}
@@ -78,17 +77,24 @@ func Test_NewResolver_CommonBase_Resolve(t *testing.T) {
 			t.Error("test failed")
 		}
 
+		maxRate, minRate, _ = r1.Resolve("缴费基数(上下限):最高缴费基数为7611元,最低缴费基数为1522元")
+		if maxRate != 7611.00 || minRate != 1522.00 {
+			t.Error("test failed")
+		}
+
 		maxRate, minRate, _ = r1.Resolve("缴费基数(上下限):固定值2138元")
-		if maxRate != 2138.00 || minRate != 2138.00 {
+		if maxRate != 0.00 || minRate != 0.00 {
 			t.Error("test failed")
 		}
 
 		maxRate, minRate, _ = r1.Resolve("缴费基数(上下限):1077")
-		if maxRate != 1077.00 || minRate != 1077.00 {
+		if maxRate != 0.00 || minRate != 0.00 {
 			t.Error("test failed")
 		}
 
 		maxRate, minRate, _ = r1.Resolve("缴费基数(上下限):基数下限按不低于全省在岗职工平均工资的60%（1369元）确定，其中就业困难人员以个人形式参保缴费的暂按不低于1200元确定；月缴费工资基数上限不超过全省在岗职工平均工资的300%（6843元）确定")
+		t.Log(maxRate)
+		t.Log(minRate)
 		if maxRate != 0.00 || minRate != 0.00 {
 			t.Error("test failed")
 		}
@@ -190,6 +196,51 @@ func Test_NewResolver_WorkInjuryRate_Resolve(t *testing.T) {
 
 		if companyRate != 0.005 || personalRate != 0.00 {
 			t.Log(companyRate)
+			t.Error("test failed")
+		}
+	}
+}
+
+func Test_HousingFundRate_Resolve(t *testing.T) {
+	r1, err := resolver.NewResolver(resolver.HousingFundRateTypeId)
+	if err == nil {
+		companyRate, personalRate, err := r1.Resolve("用人单位支付:6%~12%<br>个人支付:6%~12%<br>封顶－封底金额:封顶3515元、封底144元")
+		if err != nil {
+			t.Error(err.Error())
+		}
+		if companyRate != 0.06 || personalRate != 0.06 {
+			t.Error("test failed")
+		}
+
+		companyRate, personalRate, err = r1.Resolve("用人单位支付:5%、8%、10%<br>个人支付:5%、8%、10%<br>封顶－封底金额:封顶9501元、封底131元")
+		if err != nil {
+			t.Error(err.Error())
+		}
+		if companyRate != 0.05 || personalRate != 0.05 {
+			t.Error("test failed")
+		}
+
+		companyRate, personalRate, err = r1.Resolve("用人单位支付:12%<br>个人支付:12%<br>封顶－封底金额:封顶3385元、封底314元")
+		if err != nil {
+			t.Error(err.Error())
+		}
+		if companyRate != 0.12 || personalRate != 0.12 {
+			t.Error("test failed")
+		}
+
+		companyRate, personalRate, err = r1.Resolve("用人单位支付:5%-20%<br>个人支付:5%-20%<br>封顶－封底金额:上限7700元、下限131元")
+		if err != nil {
+			t.Error(err.Error())
+		}
+		if companyRate != 0.05 || personalRate != 0.05 {
+			t.Error("test failed")
+		}
+
+		companyRate, personalRate, err = r1.Resolve("缴费基数:<br>缴费基数(上下限):最高不得超过市统计局公布的2008年度职工月平均工资1536元的3倍，即4608元；最低不能低于全市最低工资标准，即市区550元，两县450元")
+		if err != nil {
+			t.Error(err.Error())
+		}
+		if companyRate != 0.00 || personalRate != 0.00 {
 			t.Error("test failed")
 		}
 	}
