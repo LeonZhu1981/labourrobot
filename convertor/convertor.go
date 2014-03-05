@@ -22,8 +22,6 @@ func BuildGroupedInsuranceParameter(metaDataList []*model.TaxInsuranceMetaData) 
 	for k, v := range model.LookupTypeIdList {
 		results, err := From(metaDataList).Where(func(t T) (bool, error) {
 			return t.(*model.TaxInsuranceMetaData).TypeID == k, nil
-		}).Select(func(t T) (T, error) {
-			return t.(*model.TaxInsuranceMetaData), nil
 		}).Results()
 
 		if err != nil {
@@ -31,7 +29,7 @@ func BuildGroupedInsuranceParameter(metaDataList []*model.TaxInsuranceMetaData) 
 		}
 
 		for _, result := range results {
-			metatData, _ := result.(model.TaxInsuranceMetaData)
+			metatData, _ := result.(*model.TaxInsuranceMetaData)
 			item := BuildNonGroupedInsuranceParameter(metatData, v)
 			completedInsuranceParameters = append(completedInsuranceParameters, item)
 		}
@@ -64,15 +62,16 @@ func BuildGroupedInsuranceParameter(metaDataList []*model.TaxInsuranceMetaData) 
 		for _, result := range results {
 			item := result.(*model.InsuranceParameter)
 			groupedInsuranceParameter.EffectTime = item.EffectTime
-
 			val := reflect.ValueOf(item).Elem()
 			for i := 0; i < val.NumField(); i++ {
-				if val.Type().Name() == "float32" {
+				if val.Field(i).Kind().String() == "float32" {
 					fieldValue := val.Field(i).Interface()
-					if fieldValue != 0.00 {
-						fieldName := val.Type().Field(i).Name
-						reflect.ValueOf(&groupedInsuranceParameter).FieldByName(fieldName).SetFloat(float64(fieldValue.(float32)))
+					rateValue, _ := fieldValue.(float32)
+					if rateValue == 0.00 {
+						continue
 					}
+					fieldName := val.Type().Field(i).Name
+					reflect.ValueOf(&groupedInsuranceParameter).Elem().FieldByName(fieldName).SetFloat(float64(rateValue))
 				}
 			}
 		}
@@ -83,7 +82,7 @@ func BuildGroupedInsuranceParameter(metaDataList []*model.TaxInsuranceMetaData) 
 	return groupedInsuranceParameters
 }
 
-func BuildNonGroupedInsuranceParameter(metaData model.TaxInsuranceMetaData, propertyName string) *model.InsuranceParameter {
+func BuildNonGroupedInsuranceParameter(metaData *model.TaxInsuranceMetaData, propertyName string) *model.InsuranceParameter {
 	var result *model.InsuranceParameter = &model.InsuranceParameter{}
 	var fullPropertyName1, fullPropertyName2 string
 	if strings.Index(propertyName, "Rate") > -1 {

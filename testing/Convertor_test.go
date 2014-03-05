@@ -25,7 +25,7 @@ var (
 
 func Test_BuildNonGroupedInsuranceParameter(t *testing.T) {
 	typeID := "13"
-	metaData := model.TaxInsuranceMetaData{CityName: "广州", TypeID: typeID, DataBody: "", Data1: 0.20, Data2: 0.80, EffectTime: "2013/7/1"}
+	metaData := &model.TaxInsuranceMetaData{CityName: "广州", TypeID: typeID, DataBody: "", Data1: 0.20, Data2: 0.80, EffectTime: "2013/7/1"}
 	propertyName := model.LookupTypeIdList[typeID]
 	ret := convertor.BuildNonGroupedInsuranceParameter(metaData, propertyName)
 	if ret.PensionRateByCompany != 0.20 {
