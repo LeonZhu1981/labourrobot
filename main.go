@@ -1,7 +1,7 @@
 package main
 
 import (
-	"labourrobot/crawler"
+	"labourrobot/http"
 	"labourrobot/model"
 	"labourrobot/resolver"
 )
@@ -9,8 +9,8 @@ import (
 func main() {
 	var successfulInsuranceList []model.TaxInsuranceMetaData = []model.TaxInsuranceMetaData{}
 	var failedInsuranceList []model.TaxInsuranceMetaData = []model.TaxInsuranceMetaData{}
-	for _, lookupTypeId := range model.LookupTypeIdList {
-		responseBody, _ := crawler.RequestInsuranceDataByHttp(lookupTypeId)
+	for lookupTypeId, _ := range model.LookupTypeIdList {
+		responseBody, _ := http.RequestInsuranceDataByHttp(lookupTypeId)
 		taxInsuranceMetaDataList, _ := resolver.ResolveHtml(responseBody, lookupTypeId)
 		for _, metaData := range taxInsuranceMetaDataList {
 			r, err := resolver.NewResolver(lookupTypeId)

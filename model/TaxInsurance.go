@@ -1,7 +1,20 @@
 package model
 
 var (
-	LookupTypeIdList = []string{"17", "13", "18", "8", "19", "11", "20", "6", "21", "3", "22", "14"}
+	LookupTypeIdList = map[string]string{
+		"17": "Pension%sBase",
+		"13": "PensionRate%s",
+		"18": "Jobless%sBase",
+		"8":  "JoblessRate%s",
+		"19": "Medical%sBase",
+		"11": "MedicalRate%s",
+		"20": "WorkInjury%sBase",
+		"6":  "WorkInjuryRate%s",
+		"21": "Maternity%sBase",
+		"3":  "MaternityRate%s",
+		"22": "HousingFund%sBase",
+		"14": "HousingFundRate%s",
+	}
 )
 
 type TaxParameter struct {
@@ -16,6 +29,7 @@ type InsuranceParameter struct {
 	ProvinceShortName           string
 	CityName                    string
 	CityShortName               string
+	EffectTime                  string
 	PensionRateByCompany        float32
 	PensionRateByIndividual     float32
 	PensionMaxBase              float32
