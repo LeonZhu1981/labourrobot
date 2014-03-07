@@ -15,7 +15,7 @@ func RequestInsuranceDataByHttp(typeID string) (responseBody string, err error) 
 
 	data := url.Values{}
 	data.Set("pgindex", "1")
-	data.Add("pgsize", "1000")
+	data.Add("pgsize", "50000")
 	data.Add("addrid", "0")
 	data.Add("yearid", "0")
 	data.Add("typeid", typeID)

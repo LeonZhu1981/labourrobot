@@ -1,8 +1,12 @@
 package testing
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"labourrobot/convertor"
 	"labourrobot/model"
+	//"sort"
+	//"strings"
 	"testing"
 )
 
@@ -33,7 +37,14 @@ func Test_BuildNonGroupedInsuranceParameter(t *testing.T) {
 	}
 }
 
-func Test_BuildGroupedInsuranceParameter(t *testing.T) {
+func Test_BuildGroupedAndApplyProvinceInsuranceParameter(t *testing.T) {
+	var provinceCityList []model.ProvinceCityList
+	bytes, err := ioutil.ReadFile("../provincecityList.json")
+	if err != nil {
+		t.Errorf("read file failed: %s", err.Error())
+	}
+	json.Unmarshal(bytes, &provinceCityList)
+
 	pensionBaseTypeID := "17"
 	pensionRateTypeID := "13"
 	joblessBaseTypeID := "18"
@@ -80,7 +91,7 @@ func Test_BuildGroupedInsuranceParameter(t *testing.T) {
 		&model.TaxInsuranceMetaData{CityName: "上海", TypeID: joblessBaseTypeID, DataBody: "", Data1: 8000, Data2: 2000, EffectTime: "2013/7/1"},
 	}
 
-	ret := convertor.BuildGroupedInsuranceParameter(metaDataList)
+	ret := convertor.BuildGroupedAndApplyProvinceInsuranceParameter(metaDataList, provinceCityList)
 	if len(ret) != 3 {
 		t.Errorf("The result slice len is not 3. the actual value is: %f", len(ret))
 	}
@@ -90,4 +101,41 @@ func Test_BuildGroupedInsuranceParameter(t *testing.T) {
 	if ret[0].PensionRateByCompany != 0.20 || ret[0].PensionRateByIndividual != 0.10 {
 		t.Errorf("PensionRateByCompany or PensionRateByIndividual. the actual value is: %f or %f", ret[0].PensionRateByCompany, ret[0].PensionRateByIndividual)
 	}
+	if ret[0].CityShortName != "GuangZhou" {
+		t.Errorf("CityShortName. the actual value is: %s", ret[0].CityShortName)
+	}
+
+	if ret[0].JoblessRateByCompany != 0.002 || ret[0].JoblessRateByIndividual != 0.002 {
+		t.Errorf("JoblessRateByCompany or JoblessRateByIndividual. the actual value is: %f or %f", ret[0].JoblessRateByCompany, ret[0].JoblessRateByIndividual)
+	}
+
+	if ret[0].HousingFundRateByCompany != 0.07 || ret[0].HousingFundRateByIndividual != 0.07 {
+		t.Errorf("HousingFundRateByCompany or HousingFundRateByIndividual. the actual value is: %f or %f", ret[0].HousingFundRateByCompany, ret[0].HousingFundRateByIndividual)
+	}
+
+	if ret[2].CityName != "上海" {
+		t.Errorf("The result city name is not 上海. the actual value is: %s", ret[2].CityName)
+	}
+	if ret[2].PensionRateByCompany != 0.22 || ret[2].PensionRateByIndividual != 0.11 {
+		t.Errorf("PensionRateByCompany or PensionRateByIndividual. the actual value is: %f or %f", ret[2].PensionRateByCompany, ret[2].PensionRateByIndividual)
+	}
+
+	if ret[2].JoblessMaxBase != 8000 || ret[2].JoblessMinBase != 2000 {
+		t.Errorf("JoblessMaxBase or JoblessMinBase. the actual value is: %f or %f", ret[2].JoblessMaxBase, ret[2].JoblessMinBase)
+	}
+}
+
+func Test_Sort(t *testing.T) {
+	testData1 := "a"
+	testData2 := "b"
+	testData3 := "c"
+
+	t.Error(testData1 < testData2)
+	t.Error(testData3 < testData2)
+
+	// byteArray := []byte(testData1)
+	// //byteArray2 := []byte(testData2)
+	// for _, v := range byteArray {
+	// 	t.Error(v)
+	// }
 }

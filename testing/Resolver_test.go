@@ -17,6 +17,11 @@ func Test_NewResolver_CommonRate_Resolve(t *testing.T) {
 			t.Error("test failed")
 		}
 
+		companyRate, personalRate, _ = r1.Resolve("单位缴费:12%12313<br/>个人缴费:8.1%4.512")
+		if companyRate != 0.12 || personalRate != 0.081 {
+			t.Error("test failed")
+		}
+
 		companyRate, personalRate, _ = r1.Resolve("单位缴费不缴费哦!")
 
 		if companyRate != 0.00 || personalRate != 0.00 {
@@ -34,24 +39,116 @@ func Test_NewResolver_CommonRate_Resolve(t *testing.T) {
 		if companyRate != 0.12 || personalRate != 0.00 {
 			t.Error("test failed")
 		}
+
+		companyRate, personalRate, _ = r1.Resolve("单位缴费:18%<br/>个人缴费:8%")
+
+		if companyRate != 0.18 || personalRate != 0.08 {
+			t.Error("test failed")
+		}
+
+		companyRate, personalRate, _ = r1.Resolve("单位缴费:20%（2013年没调整，沿用2012年的标准）<br/>个人缴费:8%（2013年没调整，沿用2012年的标准）")
+
+		if companyRate != 0.20 || personalRate != 0.08 {
+			t.Error("test failed")
+		}
+
 	}
 }
 
 func Test_NewResolver_CommonBase_Resolve(t *testing.T) {
 	r1, err := resolver.NewResolver(resolver.PensionBaseTypeId)
 	if err == nil {
-		maxRate, minRate, err := r1.Resolve("缴费基数:5223元<br>缴费基数(上下限):上限15669.32元、下限2089.33元。")
+		maxRate, minRate, err := r1.Resolve("缴费基数:2530元<br/>缴费基数(上下限):上限12780元、下限2530元")
 		if err != nil {
 			t.Error(err.Error())
 		}
 
-		if maxRate != 15669.32 || minRate != 2089.33 {
+		if maxRate != 12780 || minRate != 2530 {
 			t.Error("test failed")
 		}
 
-		maxRate, minRate, _ = r1.Resolve("单位缴费不缴费哦!")
+		maxRate, minRate, _ = r1.Resolve("缴费基数:1200元（2013年没调整，沿用2012年的标准）<br/>缴费基数(上下限):上限10119元、下限1200元（2013年没调整，沿用2012年的标准）")
 
-		if maxRate != 0.00 || maxRate != 0.00 {
+		if maxRate != 10119 || minRate != 1200 {
+			t.Error("test failed")
+		}
+
+		maxRate, minRate, _ = r1.Resolve("缴费基数:1050元<br/>缴费基数(上下限):")
+
+		if maxRate != 0.00 || minRate != 0.00 {
+			t.Error("test failed")
+		}
+
+		maxRate, minRate, _ = r1.Resolve("缴费基数:<br/>缴费基数(上下限):下限1957元上限11289元")
+
+		if maxRate != 11289 || minRate != 1957 {
+			t.Error("test failed")
+		}
+
+		maxRate, minRate, _ = r1.Resolve("缴费基数:<br/>缴费基数(上下限):2603")
+
+		if maxRate != 2603 || minRate != 2603 {
+			t.Error("test failed")
+		}
+
+		maxRate, minRate, _ = r1.Resolve("缴费基数:<br/>缴费基数(上下限):26723（年）")
+
+		if maxRate != 2226.92 || minRate != 2226.92 {
+			t.Error("test failed")
+		}
+
+		maxRate, minRate, _ = r1.Resolve("缴费基数:<br/>缴费基数(上下限):上限8932元 下限1787元")
+		if maxRate != 8932 || minRate != 1787 {
+			t.Error("test failed")
+		}
+
+		maxRate, minRate, _ = r1.Resolve("缴费基数:2080元（固定值）<br/>缴费基数(上下限):无上下限")
+		if maxRate != 0 || minRate != 0 {
+			t.Error("test failed")
+		}
+
+		maxRate, minRate, _ = r1.Resolve("缴费基数:1532元<br/>缴费基数(上下限):")
+		if maxRate != 0 || minRate != 0 {
+			t.Error("test failed")
+		}
+
+		maxRate, minRate, _ = r1.Resolve("缴费基数:2327.4<br/>缴费基数(上下限):上限11637下限2327.4")
+		if maxRate != 11637 || minRate != 2327.4 {
+			t.Error("test failed")
+		}
+
+		maxRate, minRate, _ = r1.Resolve("缴费基数:2600<br/>缴费基数(上下限):下限2600")
+		if maxRate != 2600 || minRate != 2600 {
+			t.Error("test failed")
+		}
+
+		maxRate, minRate, _ = r1.Resolve("缴费基数:1480元、1280元<br/>缴费基数(上下限):上限13940元、下限1480元、1280元")
+		if maxRate != 13940 || minRate != 1480 {
+			t.Error("test failed")
+		}
+
+		maxRate, minRate, _ = r1.Resolve("缴费基数:1200元<br/>缴费基数(上下限):无上限、下限1200元")
+		if maxRate != 1200 || minRate != 0 {
+			t.Error("test failed")
+		}
+
+		maxRate, minRate, _ = r1.Resolve("缴费基数:840元（2013年没调整，沿用2012年的标准）<br/>缴费基数(上下限):上限13499元、下限840元（2013年没调整，沿用2012年的标准）")
+		if maxRate != 13499 || minRate != 840 {
+			t.Error("test failed")
+		}
+
+		maxRate, minRate, _ = r1.Resolve("缴费基数:上限8195元、下限800元<br/>缴费基数(上下限):1967元")
+		if maxRate != 8195 || minRate != 0 {
+			t.Error("test failed")
+		}
+
+		maxRate, minRate, _ = r1.Resolve("缴费基数:<br/>缴费基数(上下限):下限800上限无")
+		if maxRate != 800 || minRate != 0 {
+			t.Error("test failed")
+		}
+
+		maxRate, minRate, _ = r1.Resolve("缴费基数:以上半年工资平均基数为准<br/>缴费基数(上下限):")
+		if maxRate != 0 || minRate != 0 {
 			t.Error("test failed")
 		}
 
@@ -93,9 +190,12 @@ func Test_NewResolver_CommonBase_Resolve(t *testing.T) {
 		}
 
 		maxRate, minRate, _ = r1.Resolve("缴费基数(上下限):基数下限按不低于全省在岗职工平均工资的60%（1369元）确定，其中就业困难人员以个人形式参保缴费的暂按不低于1200元确定；月缴费工资基数上限不超过全省在岗职工平均工资的300%（6843元）确定")
-		t.Log(maxRate)
-		t.Log(minRate)
 		if maxRate != 0.00 || minRate != 0.00 {
+			t.Error("test failed")
+		}
+
+		maxRate, minRate, _ = r1.Resolve("缴费基数:2138元<br/>缴费基数(上下限):固定值2138元")
+		if maxRate != 2138 || minRate != 2138 {
 			t.Error("test failed")
 		}
 	}
@@ -113,6 +213,66 @@ func Test_NewResolver_JobLessRate_Special_Resolve(t *testing.T) {
 			t.Error("test failed")
 		}
 
+		companyRate, personalRate, _ = r1.Resolve("单位缴费:1%<br/>个人缴费:农村：不缴费 城镇：0.2%")
+
+		if companyRate != 0.01 || personalRate != 0.002 {
+			t.Error("test failed")
+		}
+
+		companyRate, personalRate, _ = r1.Resolve("单位缴费不缴费哦!")
+
+		if companyRate != 0.00 || personalRate != 0.00 {
+			t.Error("test failed")
+		}
+
+		companyRate, personalRate, _ = r1.Resolve("")
+
+		if companyRate != 0.00 || personalRate != 0.00 {
+			t.Error("test failed")
+		}
+
+		companyRate, personalRate, _ = r1.Resolve("单位缴费:2%<br/>个人缴费:1%")
+
+		if companyRate != 0.02 || personalRate != 0.01 {
+			t.Error("test failed")
+		}
+
+		companyRate, personalRate, _ = r1.Resolve("单位缴费:1%<br/>个人缴费:")
+
+		if companyRate != 0.01 || personalRate != 0.00 {
+			t.Error("test failed")
+		}
+
+		companyRate, personalRate, _ = r1.Resolve("单位缴费:2%(2013年没调整，沿用2012年的标准)<br/>个人缴费:1%(2013年没调整，沿用2012年的标准)")
+
+		if companyRate != 0.02 || personalRate != 0.01 {
+			t.Error("test failed")
+		}
+
+	}
+}
+
+func Test_NewResolver_MedicalRate_Resolve(t *testing.T) {
+	r1, err := resolver.NewResolver(resolver.MedicalRateTypeId)
+	if err == nil {
+		companyRate, personalRate, err := r1.Resolve("单位缴费:8%<br/>单位大额医疗费用互助资金:<br/>个人缴费:2%<br/>个人大额医疗费用互助资金:")
+		if err != nil {
+			t.Error(err.Error())
+		}
+
+		if companyRate != 0.08 || personalRate != 0.02 {
+			t.Error("test failed")
+		}
+
+		companyRate, personalRate, err = r1.Resolve("单位缴费:6%（2013年没调整，沿用2012年的标准）<br/>单位大额医疗费用互助资金:<br/>个人缴费:2%（2013年没调整，沿用2012年的标准）<br/>个人大额医疗费用互助资金:")
+		if err != nil {
+			t.Error(err.Error())
+		}
+
+		if companyRate != 0.06 || personalRate != 0.02 {
+			t.Error("test failed")
+		}
+
 		companyRate, personalRate, _ = r1.Resolve("单位缴费不缴费哦!")
 
 		if companyRate != 0.00 || personalRate != 0.00 {
@@ -127,29 +287,26 @@ func Test_NewResolver_JobLessRate_Special_Resolve(t *testing.T) {
 	}
 }
 
-func Test_NewResolver_MedicalRate_Resolve(t *testing.T) {
-	r1, err := resolver.NewResolver(resolver.MedicalRateTypeId)
-	if err == nil {
-		companyRate, personalRate, err := r1.Resolve("单位缴费:8.0%<br>单位大额医疗费用互助资金:<br>个人缴费:2%<br>个人大额医疗费用互助资金:")
-		if err != nil {
-			t.Error(err.Error())
-		}
+func Test_NewResolver_MaternityRate_Resolve(t *testing.T) {
+	r1, _ := resolver.NewResolver(resolver.MaternityRateTypeId)
+	companyRate, personalRate, _ := r1.Resolve("单位缴费:0.8%")
+	if companyRate != 0.008 || personalRate != 0.00 {
+		t.Error("test failed")
+	}
 
-		if companyRate != 0.08 || personalRate != 0.02 {
-			t.Error("test failed")
-		}
+	companyRate, personalRate, _ = r1.Resolve("单位缴费:包含在医疗保险内，不单独缴纳生育保险")
+	if companyRate != 0.00 || personalRate != 0.00 {
+		t.Error("test failed")
+	}
 
-		companyRate, personalRate, _ = r1.Resolve("单位缴费不缴费哦!")
+	companyRate, personalRate, _ = r1.Resolve("单位缴费:0.5%（2013年没调整，沿用2012年的标准）")
+	if companyRate != 0.005 || personalRate != 0.00 {
+		t.Error("test failed")
+	}
 
-		if companyRate != 0.00 || personalRate != 0.00 {
-			t.Error("test failed")
-		}
-
-		companyRate, personalRate, _ = r1.Resolve("")
-
-		if companyRate != 0.00 || personalRate != 0.00 {
-			t.Error("test failed")
-		}
+	companyRate, personalRate, _ = r1.Resolve("单位缴费:05%")
+	if companyRate != 0.05 || personalRate != 0.00 {
+		t.Error("test failed")
 	}
 }
 
@@ -195,7 +352,17 @@ func Test_NewResolver_WorkInjuryRate_Resolve(t *testing.T) {
 		companyRate, personalRate, _ = r1.Resolve("单位缴费:0.5%（2013年没调整，沿用2012年的标准）")
 
 		if companyRate != 0.005 || personalRate != 0.00 {
-			t.Log(companyRate)
+			t.Error("test failed")
+		}
+
+		companyRate, personalRate, _ = r1.Resolve("单位缴费:0.25%、0.5%、0.75%（2013年没调整，沿用2012年标准）")
+
+		if companyRate != 0.0075 || personalRate != 0.00 {
+			t.Error("test failed")
+		}
+		companyRate, personalRate, _ = r1.Resolve("单位缴费:1.3%、2.1%、2.9%")
+
+		if companyRate != 0.029000001 || personalRate != 0.00 {
 			t.Error("test failed")
 		}
 	}
@@ -208,6 +375,11 @@ func Test_HousingFundRate_Resolve(t *testing.T) {
 		if err != nil {
 			t.Error(err.Error())
 		}
+		if companyRate != 0.06 || personalRate != 0.06 {
+			t.Error("test failed")
+		}
+
+		companyRate, personalRate, err = r1.Resolve("用人单位支付:6%~12%<br/>个人支付:6%~12%<br/>封顶－封底金额:封顶3515元、封底144元")
 		if companyRate != 0.06 || personalRate != 0.06 {
 			t.Error("test failed")
 		}
@@ -241,6 +413,62 @@ func Test_HousingFundRate_Resolve(t *testing.T) {
 			t.Error(err.Error())
 		}
 		if companyRate != 0.00 || personalRate != 0.00 {
+			t.Error("test failed")
+		}
+
+		companyRate, personalRate, err = r1.Resolve("用人单位支付:5%-12%<br/>个人支付:5%-12%<br/>封顶－封底金额:")
+		if err != nil {
+			t.Error(err.Error())
+		}
+		if companyRate != 0.05 || personalRate != 0.05 {
+			t.Error("test failed")
+		}
+
+		companyRate, personalRate, err = r1.Resolve("用人单位支付:8%-12%<br/>个人支付:8%-12% <br/>封顶－封底金额:封顶2516元、封底321元")
+		if err != nil {
+			t.Error(err.Error())
+		}
+		if companyRate != 0.08 || personalRate != 0.08 {
+			t.Error("test failed")
+		}
+
+		companyRate, personalRate, err = r1.Resolve("用人单位支付:12%<br/>个人支付:10%<br/>封顶－封底金额:")
+		if err != nil {
+			t.Error(err.Error())
+		}
+		if companyRate != 0.12 || personalRate != 0.10 {
+			t.Error("test failed")
+		}
+
+		companyRate, personalRate, err = r1.Resolve("用人单位支付:5%/8%/10%/12%<br/>个人支付:5%/8%/10%/12%<br/>封顶－封底金额:10014")
+		if err != nil {
+			t.Error(err.Error())
+		}
+		if companyRate != 0.05 || personalRate != 0.05 {
+			t.Error("test failed")
+		}
+
+		companyRate, personalRate, err = r1.Resolve("用人单位支付:5%、8%、10%<br/>个人支付:5%、8%、10%<br/>封顶－封底金额:封顶9501元、封底131元")
+		if err != nil {
+			t.Error(err.Error())
+		}
+		if companyRate != 0.05 || personalRate != 0.05 {
+			t.Error("test failed")
+		}
+
+		companyRate, personalRate, err = r1.Resolve("用人单位支付:6%~12%<br/>个人支付:6%~12%<br/>封顶－封底金额:封顶3515元、封底144元")
+		if err != nil {
+			t.Error(err.Error())
+		}
+		if companyRate != 0.06 || personalRate != 0.06 {
+			t.Error("test failed")
+		}
+
+		companyRate, personalRate, err = r1.Resolve("用人单位支付:12%（2013年没调整，沿用2012年的标准）<br/>个人支付:12%（2013年没调整，沿用2012年的标准）<br/>封顶－封底金额:")
+		if err != nil {
+			t.Error(err.Error())
+		}
+		if companyRate != 0.12 || personalRate != 0.12 {
 			t.Error("test failed")
 		}
 	}

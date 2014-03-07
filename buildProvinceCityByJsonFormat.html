@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<script type="text/javascript" src="http://passport.baidu.com/js/sitedata_bas.js" charset="GBK"></script>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+	
+<script>
+$(document).ready(function(){
+	var obj = [];
+	for (var i = 0; i < arrCity.length; i++){
+		if (arrCity[i].type === 0) {
+			if (arrCity[i].name !== "请选择") {
+				obj.push({"ProvinceName": arrCity[i].name, "CityList": [{"CityName":arrCity[i].name}]})
+			}
+		}
+		else {
+			var item = {"ProvinceName": arrCity[i].name, "CityList": []};
+			if (arrCity[i].sub !== undefined) {
+				for (var j = 0; j < arrCity[i].sub.length; j++){
+					if (arrCity[i].sub[j].type === 0 && arrCity[i].sub[j].name !== "请选择"){
+						item.CityList.push({"CityName":arrCity[i].sub[j].name})
+					}
+				}
+				obj.push(item)
+			}
+		} 
+	}
+
+  	$("#china_cities").text(JSON.stringify(obj));
+});
+</script>
+
+<title>中国城市列表JSON数组</title>
+
+</head>
+
+<body>
+<p id="china_cities"></p>
+</body>
+</html>

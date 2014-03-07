@@ -21,15 +21,17 @@ const (
 	MaternityRateTypeId   = "3"
 	HousingFundBaseTypeId = "22"
 	HousingFundRateTypeId = "14"
-
-	BRSplitSymblo        = "<br>"
-	CommaSymblo          = ","
-	FullWidthCommaSymblo = "，"
-	ChineseCommaSymblo   = "、"
-	DashSymblo           = "-"
-	PercentSymblo        = "%"
-	SwungDashSymblo      = "~"
-	DigitalRegMatch      = `[0-9.%、，,~-]`
+	BRSplitSymblo         = "<br>"
+	CloseBRSplitSymblo    = "<br/>"
+	CommaSymblo           = ","
+	FullWidthCommaSymblo  = "，"
+	ChineseCommaSymblo    = "、"
+	DashSymblo            = "-"
+	PercentSymblo         = "%"
+	SwungDashSymblo       = "~"
+	CurrencySymblo        = "元"
+	MaxLimitSymblo        = "上限"
+	DigitalRegMatch       = `[0-9.%、，,~-]`
 )
 
 type TextResolver interface {
@@ -90,6 +92,13 @@ func printNotFoundSplitSymbloError(tag string, splitSymblo string) (float32, flo
 }
 
 func resolveParamerterFromRegexp(tag1 string, tag2 string, regExpression string) (retTag1 float32, retTag2 float32, err error) {
+	if firstIndex := strings.Index(tag1, CurrencySymblo); firstIndex > -1 {
+		tag1 = tag1[0:firstIndex]
+	}
+	if firstIndex := strings.Index(tag2, CurrencySymblo); firstIndex > -1 {
+		tag2 = tag2[0:firstIndex]
+	}
+
 	re := regexp.MustCompile(regExpression)
 	tag1 = strings.Join(re.FindAllString(tag1, -1), "")
 	tag2 = strings.Join(re.FindAllString(tag2, -1), "")
@@ -107,7 +116,11 @@ func resolveParamerterFromRegexp(tag1 string, tag2 string, regExpression string)
 	retTag1 = float32(fTag1)
 	retTag2 = float32(fTag2)
 
-	return retTag1, retTag2, nil
+	if retTag1 > retTag2 {
+		return retTag1, retTag2, nil
+	} else {
+		return retTag2, retTag1, nil
+	}
 }
 
 func commonBaseResolve(tag string) (maxBase float32, minBase float32, err error) {
@@ -115,35 +128,56 @@ func commonBaseResolve(tag string) (maxBase float32, minBase float32, err error)
 		return printTagIsEmptyError(tag)
 	}
 
-	if strings.Index(tag, "上限") > -1 && strings.Index(tag, BRSplitSymblo) == -1 {
-		arr := strings.Split(tag, "上限")
+	if strings.Index(tag, MaxLimitSymblo) > -1 && strings.Index(tag, CloseBRSplitSymblo) == -1 {
+		arr := strings.Split(tag, MaxLimitSymblo)
 		return resolveParamerterFromRegexp(arr[1], arr[0], DigitalRegMatch)
 	} else {
-		if strings.Index(tag, SwungDashSymblo) > -1 {
-			arr := strings.Split(tag, SwungDashSymblo)
-			return resolveParamerterFromRegexp(arr[1], arr[0], DigitalRegMatch)
-		} else if strings.Index(tag, FullWidthCommaSymblo) > -1 {
-			arr := strings.Split(tag, FullWidthCommaSymblo)
-			return resolveParamerterFromRegexp(arr[0], arr[1], DigitalRegMatch)
-		} else if strings.Index(tag, CommaSymblo) > -1 {
-			arr := strings.Split(tag, CommaSymblo)
-			return resolveParamerterFromRegexp(arr[0], arr[1], DigitalRegMatch)
+		if strings.Index(tag, CloseBRSplitSymblo) == -1 {
+			if strings.Index(tag, SwungDashSymblo) > -1 {
+				arr := strings.Split(tag, SwungDashSymblo)
+				return resolveParamerterFromRegexp(arr[1], arr[0], DigitalRegMatch)
+			} else if strings.Index(tag, FullWidthCommaSymblo) > -1 {
+				arr := strings.Split(tag, FullWidthCommaSymblo)
+				return resolveParamerterFromRegexp(arr[0], arr[1], DigitalRegMatch)
+			} else if strings.Index(tag, CommaSymblo) > -1 {
+				arr := strings.Split(tag, CommaSymblo)
+				return resolveParamerterFromRegexp(arr[0], arr[1], DigitalRegMatch)
+			}
 		} else {
-			if strings.IndexAny(tag, BRSplitSymblo) == -1 {
-				return printNotFoundSplitSymbloError(tag, BRSplitSymblo)
+			var arr []string
+			arr = strings.Split(tag, BRSplitSymblo)
+			if len(arr) < 2 {
+				arr = strings.Split(tag, CloseBRSplitSymblo)
 			}
 
-			arr := strings.Split(tag, BRSplitSymblo)
 			maxMinBaseString := arr[1]
-
-			if strings.IndexAny(maxMinBaseString, ChineseCommaSymblo) == -1 {
-				return printNotFoundSplitSymbloError(tag, ChineseCommaSymblo)
+			if strings.Index(maxMinBaseString, ChineseCommaSymblo) > -1 {
+				maxMinBaseArr := strings.Split(maxMinBaseString, ChineseCommaSymblo)
+				return resolveParamerterFromRegexp(maxMinBaseArr[0], maxMinBaseArr[1], DigitalRegMatch)
+			} else if strings.Index(tag, MaxLimitSymblo) > -1 && strings.Index(tag, "元 ") == -1 {
+				if strings.Index(tag, "缴费基数(上下限):上限") > -1 {
+					arr = strings.Split(tag, "下限")
+					return resolveParamerterFromRegexp(arr[0], arr[1], DigitalRegMatch)
+				}
+				arr = strings.Split(tag, MaxLimitSymblo)
+				return resolveParamerterFromRegexp(arr[1], arr[0], DigitalRegMatch)
+			} else if strings.Index(tag, "元 ") > -1 {
+				arr = strings.Split(tag, "元 ")
+				return resolveParamerterFromRegexp(arr[0], arr[1], DigitalRegMatch)
+			} else {
+				if strings.Index(arr[1], "（年）") > -1 {
+					maxBase, minBase, err = resolveParamerterFromRegexp(arr[1], arr[1], DigitalRegMatch)
+					tmp := fmt.Sprintf("%.2f", (maxBase / 12))
+					tmpDig, _ := strconv.ParseFloat(tmp, 32)
+					maxBase = float32(tmpDig)
+					minBase = maxBase
+					return maxBase, minBase, err
+				}
+				return resolveParamerterFromRegexp(arr[1], arr[1], DigitalRegMatch)
 			}
-			maxMinBaseArr := strings.Split(maxMinBaseString, ChineseCommaSymblo)
-
-			return resolveParamerterFromRegexp(maxMinBaseArr[0], maxMinBaseArr[1], DigitalRegMatch)
 		}
 	}
+	return 0.00, 0.00, nil
 }
 
 func commonRateResolve(tag string) (companyRate float32, personalRate float32, err error) {
@@ -151,11 +185,16 @@ func commonRateResolve(tag string) (companyRate float32, personalRate float32, e
 		return printTagIsEmptyError(tag)
 	}
 
-	if strings.IndexAny(tag, BRSplitSymblo) == -1 {
-		return printNotFoundSplitSymbloError(tag, BRSplitSymblo)
+	var arr []string
+
+	arr = strings.Split(tag, BRSplitSymblo)
+	if len(arr) < 2 {
+		arr = strings.Split(tag, CloseBRSplitSymblo)
+		if len(arr) < 2 {
+			return printNotFoundSplitSymbloError(tag, BRSplitSymblo)
+		}
 	}
 
-	arr := strings.Split(tag, BRSplitSymblo)
 	companyRateString := arr[0]
 	personalRateString := arr[1]
 	re := regexp.MustCompile(DigitalRegMatch)
@@ -230,11 +269,15 @@ func (r *MedicalRateResolver) Resolve(tag string) (companyRate float32, personal
 		return printTagIsEmptyError(tag)
 	}
 
-	if strings.IndexAny(tag, BRSplitSymblo) == -1 {
-		return printNotFoundSplitSymbloError(tag, BRSplitSymblo)
+	var arr []string
+	arr = strings.Split(tag, BRSplitSymblo)
+	if len(arr) < 2 {
+		arr = strings.Split(tag, CloseBRSplitSymblo)
+		if len(arr) < 2 {
+			return printNotFoundSplitSymbloError(tag, BRSplitSymblo)
+		}
 	}
 
-	arr := strings.Split(tag, BRSplitSymblo)
 	companyRateString := arr[0]
 	personalRateString := arr[2]
 	re := regexp.MustCompile(DigitalRegMatch)
@@ -334,7 +377,20 @@ type MaternityRateResolver struct {
 }
 
 func (r *MaternityRateResolver) Resolve(tag string) (companyRate float32, personalRate float32, err error) {
-	return commonRateResolve(tag)
+	if firstIndex := strings.Index(tag, PercentSymblo); firstIndex > -1 {
+		tag = tag[0:firstIndex]
+	}
+
+	re := regexp.MustCompile(DigitalRegMatch)
+	resultString := strings.Join(re.FindAllString(tag, -1), "")
+
+	fcompanyRate, err := strconv.ParseFloat(resultString, 32)
+	if err != nil {
+		fcompanyRate = 0.00
+	}
+
+	companyRate = float32(fcompanyRate) / 100
+	return companyRate, 0.00, nil
 }
 
 type HousingFundBaseResolver struct {
@@ -352,11 +408,14 @@ func (r *HousingFundRateResolver) Resolve(tag string) (companyRate float32, pers
 		return printTagIsEmptyError(tag)
 	}
 
-	if strings.IndexAny(tag, BRSplitSymblo) == -1 {
-		return printNotFoundSplitSymbloError(tag, BRSplitSymblo)
+	var arr []string
+	arr = strings.Split(tag, BRSplitSymblo)
+	if len(arr) < 2 {
+		arr = strings.Split(tag, CloseBRSplitSymblo)
+		if len(arr) < 2 {
+			return printNotFoundSplitSymbloError(tag, BRSplitSymblo)
+		}
 	}
-
-	arr := strings.Split(tag, BRSplitSymblo)
 
 	var processor = func(arg string) (rate float32, err error) {
 		re := regexp.MustCompile(DigitalRegMatch)
@@ -396,6 +455,7 @@ func (r *HousingFundRateResolver) Resolve(tag string) (companyRate float32, pers
 			} else {
 				resultString = ""
 			}
+
 			frate, err := strconv.ParseFloat(resultString, 32)
 			if err != nil {
 				frate = 0.00
@@ -406,8 +466,8 @@ func (r *HousingFundRateResolver) Resolve(tag string) (companyRate float32, pers
 		}
 	}
 
-	companyRate, _ = processor(arr[1])
-	personalRate, _ = processor(arr[0])
+	companyRate, _ = processor(arr[0])
+	personalRate, _ = processor(arr[1])
 
 	return companyRate, personalRate, nil
 }

@@ -21,7 +21,7 @@ type TaxParameter struct {
 	TaxRate                float32
 	MaxWholeMonthTaxAmount float32
 	MinWholeMonthTaxAmount float32
-	DeductAmout            float32
+	DeductAmount           float32
 }
 
 type InsuranceParameter struct {
@@ -54,6 +54,7 @@ type InsuranceParameter struct {
 	HousingFundRateByIndividual float32
 	HousingFundMaxBase          float32
 	HousingFundMinBase          float32
+	IsProvince                  bool `json:"-"`
 }
 
 type TaxInsurance struct {
@@ -64,10 +65,22 @@ type TaxInsurance struct {
 }
 
 type TaxInsuranceMetaData struct {
-	CityName   string
-	TypeID     string
-	DataBody   string
-	Data1      float32
-	Data2      float32
-	EffectTime string
+	CityName     string
+	TypeID       string
+	DataBody     string
+	Data1        float32
+	Data2        float32
+	EffectTime   string
+	TypeName     string
+	FailedReason string
+	Year         int
+}
+
+type ProvinceCityList struct {
+	ProvinceName string
+	CityList     []City
+}
+
+type City struct {
+	CityName string
 }

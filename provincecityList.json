@@ -1,0 +1,1273 @@
+[
+  {
+    "ProvinceName": "请选择",
+    "CityList": []
+  },
+  {
+    "ProvinceName": "北京",
+    "CityList": [
+      {
+        "CityName": "北京"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "广东",
+    "CityList": [
+      {
+        "CityName": "广州"
+      },
+      {
+        "CityName": "深圳"
+      },
+      {
+        "CityName": "珠海"
+      },
+      {
+        "CityName": "汕头"
+      },
+      {
+        "CityName": "韶关"
+      },
+      {
+        "CityName": "佛山"
+      },
+      {
+        "CityName": "江门"
+      },
+      {
+        "CityName": "湛江"
+      },
+      {
+        "CityName": "茂名"
+      },
+      {
+        "CityName": "肇庆"
+      },
+      {
+        "CityName": "惠州"
+      },
+      {
+        "CityName": "梅州"
+      },
+      {
+        "CityName": "汕尾"
+      },
+      {
+        "CityName": "河源"
+      },
+      {
+        "CityName": "阳江"
+      },
+      {
+        "CityName": "清远"
+      },
+      {
+        "CityName": "东莞"
+      },
+      {
+        "CityName": "中山"
+      },
+      {
+        "CityName": "潮州"
+      },
+      {
+        "CityName": "揭阳"
+      },
+      {
+        "CityName": "云浮"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "上海",
+    "CityList": [
+      {
+        "CityName": "上海"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "天津",
+    "CityList": [
+      {
+        "CityName": "天津"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "重庆",
+    "CityList": [
+      {
+        "CityName": "重庆"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "辽宁",
+    "CityList": [
+      {
+        "CityName": "沈阳"
+      },
+      {
+        "CityName": "大连"
+      },
+      {
+        "CityName": "鞍山"
+      },
+      {
+        "CityName": "抚顺"
+      },
+      {
+        "CityName": "本溪"
+      },
+      {
+        "CityName": "丹东"
+      },
+      {
+        "CityName": "锦州"
+      },
+      {
+        "CityName": "营口"
+      },
+      {
+        "CityName": "阜新"
+      },
+      {
+        "CityName": "辽阳"
+      },
+      {
+        "CityName": "盘锦"
+      },
+      {
+        "CityName": "铁岭"
+      },
+      {
+        "CityName": "朝阳"
+      },
+      {
+        "CityName": "葫芦岛"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "江苏",
+    "CityList": [
+      {
+        "CityName": "南京"
+      },
+      {
+        "CityName": "苏州"
+      },
+      {
+        "CityName": "无锡"
+      },
+      {
+        "CityName": "常州"
+      },
+      {
+        "CityName": "镇江"
+      },
+      {
+        "CityName": "南通"
+      },
+      {
+        "CityName": "泰州"
+      },
+      {
+        "CityName": "扬州"
+      },
+      {
+        "CityName": "盐城"
+      },
+      {
+        "CityName": "连云港"
+      },
+      {
+        "CityName": "徐州"
+      },
+      {
+        "CityName": "淮安"
+      },
+      {
+        "CityName": "宿迁"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "湖北",
+    "CityList": [
+      {
+        "CityName": "武汉"
+      },
+      {
+        "CityName": "黄石"
+      },
+      {
+        "CityName": "十堰"
+      },
+      {
+        "CityName": "荆州"
+      },
+      {
+        "CityName": "宜昌"
+      },
+      {
+        "CityName": "襄樊"
+      },
+      {
+        "CityName": "鄂州"
+      },
+      {
+        "CityName": "荆门"
+      },
+      {
+        "CityName": "孝感"
+      },
+      {
+        "CityName": "黄冈"
+      },
+      {
+        "CityName": "咸宁"
+      },
+      {
+        "CityName": "随州"
+      },
+      {
+        "CityName": "恩施土家族苗族自治州"
+      },
+      {
+        "CityName": "仙桃"
+      },
+      {
+        "CityName": "天门"
+      },
+      {
+        "CityName": "潜江"
+      },
+      {
+        "CityName": "神农架林区"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "四川",
+    "CityList": [
+      {
+        "CityName": "成都"
+      },
+      {
+        "CityName": "自贡"
+      },
+      {
+        "CityName": "攀枝花"
+      },
+      {
+        "CityName": "泸州"
+      },
+      {
+        "CityName": "德阳"
+      },
+      {
+        "CityName": "绵阳"
+      },
+      {
+        "CityName": "广元"
+      },
+      {
+        "CityName": "遂宁"
+      },
+      {
+        "CityName": "内江"
+      },
+      {
+        "CityName": "乐山"
+      },
+      {
+        "CityName": "南充"
+      },
+      {
+        "CityName": "眉山"
+      },
+      {
+        "CityName": "宜宾"
+      },
+      {
+        "CityName": "广安"
+      },
+      {
+        "CityName": "达州"
+      },
+      {
+        "CityName": "雅安"
+      },
+      {
+        "CityName": "巴中"
+      },
+      {
+        "CityName": "资阳"
+      },
+      {
+        "CityName": "阿坝藏族羌族自治州"
+      },
+      {
+        "CityName": "甘孜藏族自治州"
+      },
+      {
+        "CityName": "凉山彝族自治州"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "陕西",
+    "CityList": [
+      {
+        "CityName": "西安"
+      },
+      {
+        "CityName": "铜川"
+      },
+      {
+        "CityName": "宝鸡"
+      },
+      {
+        "CityName": "咸阳"
+      },
+      {
+        "CityName": "渭南"
+      },
+      {
+        "CityName": "延安"
+      },
+      {
+        "CityName": "汉中"
+      },
+      {
+        "CityName": "榆林"
+      },
+      {
+        "CityName": "安康"
+      },
+      {
+        "CityName": "商洛"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "河北",
+    "CityList": [
+      {
+        "CityName": "石家庄"
+      },
+      {
+        "CityName": "唐山"
+      },
+      {
+        "CityName": "秦皇岛"
+      },
+      {
+        "CityName": "邯郸"
+      },
+      {
+        "CityName": "邢台"
+      },
+      {
+        "CityName": "保定"
+      },
+      {
+        "CityName": "张家口"
+      },
+      {
+        "CityName": "承德"
+      },
+      {
+        "CityName": "沧州"
+      },
+      {
+        "CityName": "廊坊"
+      },
+      {
+        "CityName": "衡水"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "山西",
+    "CityList": [
+      {
+        "CityName": "太原"
+      },
+      {
+        "CityName": "大同"
+      },
+      {
+        "CityName": "阳泉"
+      },
+      {
+        "CityName": "长治"
+      },
+      {
+        "CityName": "晋城"
+      },
+      {
+        "CityName": "朔州"
+      },
+      {
+        "CityName": "晋中"
+      },
+      {
+        "CityName": "运城"
+      },
+      {
+        "CityName": "忻州"
+      },
+      {
+        "CityName": "临汾"
+      },
+      {
+        "CityName": "吕梁"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "河南",
+    "CityList": [
+      {
+        "CityName": "郑州"
+      },
+      {
+        "CityName": "开封"
+      },
+      {
+        "CityName": "洛阳"
+      },
+      {
+        "CityName": "平顶山"
+      },
+      {
+        "CityName": "安阳"
+      },
+      {
+        "CityName": "鹤壁"
+      },
+      {
+        "CityName": "新乡"
+      },
+      {
+        "CityName": "焦作"
+      },
+      {
+        "CityName": "濮阳"
+      },
+      {
+        "CityName": "许昌"
+      },
+      {
+        "CityName": "漯河"
+      },
+      {
+        "CityName": "三门峡"
+      },
+      {
+        "CityName": "南阳"
+      },
+      {
+        "CityName": "商丘"
+      },
+      {
+        "CityName": "信阳"
+      },
+      {
+        "CityName": "周口"
+      },
+      {
+        "CityName": "驻马店"
+      },
+      {
+        "CityName": "焦作"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "吉林",
+    "CityList": [
+      {
+        "CityName": "长春"
+      },
+      {
+        "CityName": "吉林"
+      },
+      {
+        "CityName": "四平"
+      },
+      {
+        "CityName": "辽源"
+      },
+      {
+        "CityName": "通化"
+      },
+      {
+        "CityName": "白山"
+      },
+      {
+        "CityName": "松原"
+      },
+      {
+        "CityName": "白城"
+      },
+      {
+        "CityName": "延边朝鲜族自治州"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "黑龙江",
+    "CityList": [
+      {
+        "CityName": "哈尔滨"
+      },
+      {
+        "CityName": "齐齐哈尔"
+      },
+      {
+        "CityName": "鹤岗"
+      },
+      {
+        "CityName": "双鸭山"
+      },
+      {
+        "CityName": "鸡西"
+      },
+      {
+        "CityName": "大庆"
+      },
+      {
+        "CityName": "伊春"
+      },
+      {
+        "CityName": "牡丹江"
+      },
+      {
+        "CityName": "佳木斯"
+      },
+      {
+        "CityName": "七台河"
+      },
+      {
+        "CityName": "黑河"
+      },
+      {
+        "CityName": "绥化"
+      },
+      {
+        "CityName": "大兴安岭地区"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "内蒙古",
+    "CityList": [
+      {
+        "CityName": "呼和浩特"
+      },
+      {
+        "CityName": "包头"
+      },
+      {
+        "CityName": "乌海"
+      },
+      {
+        "CityName": "赤峰"
+      },
+      {
+        "CityName": "通辽"
+      },
+      {
+        "CityName": "鄂尔多斯"
+      },
+      {
+        "CityName": "呼伦贝尔"
+      },
+      {
+        "CityName": "巴彦淖尔"
+      },
+      {
+        "CityName": "乌兰察布"
+      },
+      {
+        "CityName": "锡林郭勒盟"
+      },
+      {
+        "CityName": "兴安盟"
+      },
+      {
+        "CityName": "阿拉善盟"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "山东",
+    "CityList": [
+      {
+        "CityName": "济南"
+      },
+      {
+        "CityName": "青岛"
+      },
+      {
+        "CityName": "淄博"
+      },
+      {
+        "CityName": "枣庄"
+      },
+      {
+        "CityName": "东营"
+      },
+      {
+        "CityName": "烟台"
+      },
+      {
+        "CityName": "潍坊"
+      },
+      {
+        "CityName": "济宁"
+      },
+      {
+        "CityName": "泰安"
+      },
+      {
+        "CityName": "威海"
+      },
+      {
+        "CityName": "日照"
+      },
+      {
+        "CityName": "莱芜"
+      },
+      {
+        "CityName": "临沂"
+      },
+      {
+        "CityName": "德州"
+      },
+      {
+        "CityName": "聊城"
+      },
+      {
+        "CityName": "滨州"
+      },
+      {
+        "CityName": "菏泽"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "安徽",
+    "CityList": [
+      {
+        "CityName": "合肥"
+      },
+      {
+        "CityName": "芜湖"
+      },
+      {
+        "CityName": "蚌埠"
+      },
+      {
+        "CityName": "淮南"
+      },
+      {
+        "CityName": "马鞍山"
+      },
+      {
+        "CityName": "淮北"
+      },
+      {
+        "CityName": "铜陵"
+      },
+      {
+        "CityName": "安庆"
+      },
+      {
+        "CityName": "黄山"
+      },
+      {
+        "CityName": "滁州"
+      },
+      {
+        "CityName": "阜阳"
+      },
+      {
+        "CityName": "宿州"
+      },
+      {
+        "CityName": "巢湖"
+      },
+      {
+        "CityName": "六安"
+      },
+      {
+        "CityName": "亳州"
+      },
+      {
+        "CityName": "池州"
+      },
+      {
+        "CityName": "宣城"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "浙江",
+    "CityList": [
+      {
+        "CityName": "杭州"
+      },
+      {
+        "CityName": "宁波"
+      },
+      {
+        "CityName": "温州"
+      },
+      {
+        "CityName": "嘉兴"
+      },
+      {
+        "CityName": "湖州"
+      },
+      {
+        "CityName": "绍兴"
+      },
+      {
+        "CityName": "金华"
+      },
+      {
+        "CityName": "衢州"
+      },
+      {
+        "CityName": "舟山"
+      },
+      {
+        "CityName": "台州"
+      },
+      {
+        "CityName": "丽水"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "福建",
+    "CityList": [
+      {
+        "CityName": "福州"
+      },
+      {
+        "CityName": "厦门"
+      },
+      {
+        "CityName": "莆田"
+      },
+      {
+        "CityName": "三明"
+      },
+      {
+        "CityName": "泉州"
+      },
+      {
+        "CityName": "漳州"
+      },
+      {
+        "CityName": "南平"
+      },
+      {
+        "CityName": "龙岩"
+      },
+      {
+        "CityName": "宁德"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "湖南",
+    "CityList": [
+      {
+        "CityName": "长沙"
+      },
+      {
+        "CityName": "株洲"
+      },
+      {
+        "CityName": "湘潭"
+      },
+      {
+        "CityName": "衡阳"
+      },
+      {
+        "CityName": "邵阳"
+      },
+      {
+        "CityName": "岳阳"
+      },
+      {
+        "CityName": "常德"
+      },
+      {
+        "CityName": "张家界"
+      },
+      {
+        "CityName": "益阳"
+      },
+      {
+        "CityName": "郴州"
+      },
+      {
+        "CityName": "永州"
+      },
+      {
+        "CityName": "怀化"
+      },
+      {
+        "CityName": "娄底"
+      },
+      {
+        "CityName": "湘西土家族苗族自治州"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "广西",
+    "CityList": [
+      {
+        "CityName": "南宁"
+      },
+      {
+        "CityName": "柳州"
+      },
+      {
+        "CityName": "桂林"
+      },
+      {
+        "CityName": "梧州"
+      },
+      {
+        "CityName": "北海"
+      },
+      {
+        "CityName": "防城港"
+      },
+      {
+        "CityName": "钦州"
+      },
+      {
+        "CityName": "贵港"
+      },
+      {
+        "CityName": "玉林"
+      },
+      {
+        "CityName": "百色"
+      },
+      {
+        "CityName": "贺州"
+      },
+      {
+        "CityName": "河池"
+      },
+      {
+        "CityName": "来宾"
+      },
+      {
+        "CityName": "崇左"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "江西",
+    "CityList": [
+      {
+        "CityName": "南昌"
+      },
+      {
+        "CityName": "景德镇"
+      },
+      {
+        "CityName": "萍乡"
+      },
+      {
+        "CityName": "九江"
+      },
+      {
+        "CityName": "新余"
+      },
+      {
+        "CityName": "鹰潭"
+      },
+      {
+        "CityName": "赣州"
+      },
+      {
+        "CityName": "吉安"
+      },
+      {
+        "CityName": "宜春"
+      },
+      {
+        "CityName": "抚州"
+      },
+      {
+        "CityName": "上饶"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "贵州",
+    "CityList": [
+      {
+        "CityName": "贵阳"
+      },
+      {
+        "CityName": "六盘水"
+      },
+      {
+        "CityName": "遵义"
+      },
+      {
+        "CityName": "安顺"
+      },
+      {
+        "CityName": "铜仁地区"
+      },
+      {
+        "CityName": "毕节地区"
+      },
+      {
+        "CityName": "黔西南布依族苗族自治州"
+      },
+      {
+        "CityName": "黔东南苗族侗族自治州"
+      },
+      {
+        "CityName": "黔南布依族苗族自治州"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "云南",
+    "CityList": [
+      {
+        "CityName": "昆明"
+      },
+      {
+        "CityName": "曲靖"
+      },
+      {
+        "CityName": "玉溪"
+      },
+      {
+        "CityName": "保山"
+      },
+      {
+        "CityName": "昭通"
+      },
+      {
+        "CityName": "丽江"
+      },
+      {
+        "CityName": "普洱"
+      },
+      {
+        "CityName": "临沧"
+      },
+      {
+        "CityName": "德宏傣族景颇族自治州"
+      },
+      {
+        "CityName": "怒江傈僳族自治州"
+      },
+      {
+        "CityName": "迪庆藏族自治州"
+      },
+      {
+        "CityName": "大理白族自治州"
+      },
+      {
+        "CityName": "楚雄彝族自治州"
+      },
+      {
+        "CityName": "红河哈尼族彝族自治州"
+      },
+      {
+        "CityName": "文山壮族苗族自治州"
+      },
+      {
+        "CityName": "西双版纳傣族自治州"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "西藏",
+    "CityList": [
+      {
+        "CityName": "拉萨"
+      },
+      {
+        "CityName": "那曲地区"
+      },
+      {
+        "CityName": "昌都地区"
+      },
+      {
+        "CityName": "林芝地区"
+      },
+      {
+        "CityName": "山南地区"
+      },
+      {
+        "CityName": "日喀则地区"
+      },
+      {
+        "CityName": "阿里地区"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "海南",
+    "CityList": [
+      {
+        "CityName": "海口"
+      },
+      {
+        "CityName": "三亚"
+      },
+      {
+        "CityName": "五指山"
+      },
+      {
+        "CityName": "琼海"
+      },
+      {
+        "CityName": "儋州"
+      },
+      {
+        "CityName": "文昌"
+      },
+      {
+        "CityName": "万宁"
+      },
+      {
+        "CityName": "东方"
+      },
+      {
+        "CityName": "澄迈县"
+      },
+      {
+        "CityName": "定安县"
+      },
+      {
+        "CityName": "屯昌县"
+      },
+      {
+        "CityName": "临高县"
+      },
+      {
+        "CityName": "白沙黎族自治县"
+      },
+      {
+        "CityName": "昌江黎族自治县"
+      },
+      {
+        "CityName": "乐东黎族自治县"
+      },
+      {
+        "CityName": "陵水黎族自治县"
+      },
+      {
+        "CityName": "保亭黎族苗族自治县"
+      },
+      {
+        "CityName": "琼中黎族苗族自治县"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "甘肃",
+    "CityList": [
+      {
+        "CityName": "兰州"
+      },
+      {
+        "CityName": "嘉峪关"
+      },
+      {
+        "CityName": "金昌"
+      },
+      {
+        "CityName": "白银"
+      },
+      {
+        "CityName": "天水"
+      },
+      {
+        "CityName": "武威"
+      },
+      {
+        "CityName": "酒泉"
+      },
+      {
+        "CityName": "张掖"
+      },
+      {
+        "CityName": "庆阳"
+      },
+      {
+        "CityName": "平凉"
+      },
+      {
+        "CityName": "定西"
+      },
+      {
+        "CityName": "陇南"
+      },
+      {
+        "CityName": "临夏回族自治州"
+      },
+      {
+        "CityName": "甘南藏族自治州"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "宁夏",
+    "CityList": [
+      {
+        "CityName": "银川"
+      },
+      {
+        "CityName": "石嘴山"
+      },
+      {
+        "CityName": "吴忠"
+      },
+      {
+        "CityName": "固原"
+      },
+      {
+        "CityName": "中卫"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "青海",
+    "CityList": [
+      {
+        "CityName": "西宁"
+      },
+      {
+        "CityName": "海东地区"
+      },
+      {
+        "CityName": "海北藏族自治州"
+      },
+      {
+        "CityName": "海南藏族自治州"
+      },
+      {
+        "CityName": "黄南藏族自治州"
+      },
+      {
+        "CityName": "果洛藏族自治州"
+      },
+      {
+        "CityName": "玉树藏族自治州"
+      },
+      {
+        "CityName": "海西蒙古族藏族自治州"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "新疆",
+    "CityList": [
+      {
+        "CityName": "乌鲁木齐"
+      },
+      {
+        "CityName": "克拉玛依"
+      },
+      {
+        "CityName": "吐鲁番地区"
+      },
+      {
+        "CityName": "哈密地区"
+      },
+      {
+        "CityName": "和田地区"
+      },
+      {
+        "CityName": "阿克苏地区"
+      },
+      {
+        "CityName": "喀什地区"
+      },
+      {
+        "CityName": "克孜勒苏柯尔克孜自治州"
+      },
+      {
+        "CityName": "巴音郭楞蒙古自治州"
+      },
+      {
+        "CityName": "昌吉回族自治州"
+      },
+      {
+        "CityName": "博尔塔拉蒙古自治州"
+      },
+      {
+        "CityName": "石河子"
+      },
+      {
+        "CityName": "阿拉尔"
+      },
+      {
+        "CityName": "图木舒克"
+      },
+      {
+        "CityName": "五家渠"
+      },
+      {
+        "CityName": "伊犁哈萨克自治州"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "香港",
+    "CityList": [
+      {
+        "CityName": "香港"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "澳门",
+    "CityList": [
+      {
+        "CityName": "澳门"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "台湾",
+    "CityList": [
+      {
+        "CityName": "台湾"
+      }
+    ]
+  },
+  {
+    "ProvinceName": "海外",
+    "CityList": [
+      {
+        "CityName": "海外"
+      }
+    ]
+  }
+]
