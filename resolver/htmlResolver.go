@@ -32,6 +32,9 @@ func ResolveHtml(htmlBody string, typeID string) (taxInsuranceMetaDataList []mod
 		yearStr, _ := s.Find("td").Eq(2).Html()
 
 		year, _ := strconv.Atoi(strings.Replace(yearStr, "年", "", -1))
+		htmlText = strings.Replace(htmlText, "<br>", "<br/>", -1)
+		htmlText = strings.Replace(htmlText, "线", "限", -1)
+
 		data := model.TaxInsuranceMetaData{cityName, typeID, htmlText, 0.00, 0.00, effectTime, model.LookupTypeIdList[typeID], "", year}
 		taxInsuranceMetaDataList = append(taxInsuranceMetaDataList, data)
 	})

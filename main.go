@@ -9,7 +9,23 @@ import (
 	"labourrobot/model"
 	"labourrobot/resolver"
 	"os"
+	"reflect"
+	"strings"
 )
+
+func buildDefaultInsurceParamter() model.InsuranceParameter {
+	var defaultData model.InsuranceParameter
+	bytes, err := ioutil.ReadFile("defaultInsuranceData.json")
+
+	if err != nil {
+		fmt.Errorf("Read %s file error: %s", "defaultInsuranceData.json", err.Error())
+	}
+
+	if err := json.Unmarshal(bytes, &defaultData); err != nil {
+		fmt.Errorf("Unmarshal json file error")
+	}
+	return defaultData
+}
 
 func persistenceFileByJsonFormat(t interface{}, fileName string) error {
 	retByte, err := json.Marshal(t)
@@ -40,6 +56,20 @@ func loadProvinceCityListFromFile() []model.ProvinceCityList {
 		fmt.Errorf("Unmarshal json file error")
 	}
 	return provinceCityList
+}
+
+func loadDataFromFile() []model.TaxInsurance {
+	var data []model.TaxInsurance
+	bytes, err := ioutil.ReadFile("TaxInsuranceMetaData.json")
+
+	if err != nil {
+		fmt.Errorf("Read %s file error: %s", "TaxInsuranceMetaData.json")
+	}
+
+	if err := json.Unmarshal(bytes, &data); err != nil {
+		fmt.Errorf("Unmarshal json file error")
+	}
+	return data
 }
 
 func main() {
@@ -115,7 +145,7 @@ func main() {
 
 	fmt.Println("Convert text start...")
 	provinceCityList := loadProvinceCityListFromFile()
-	groupedInsuranceList := convertor.BuildGroupedAndApplyProvinceInsuranceParameter(copyedInsuranceList, provinceCityList)
+	groupedInsuranceList := convertor.BuildGroupedAndApplyProvinceInsuranceParameter(copyedInsuranceList, provinceCityList, buildDefaultInsurceParamter())
 	for _, item := range groupedInsuranceList {
 		convertedInsuranceList = append(convertedInsuranceList, item)
 	}
@@ -130,6 +160,29 @@ func main() {
 	persistenceFileByJsonFormat(result, "TaxInsuranceMetaData.json")
 	persistenceFileByJsonFormat(failedInsuranceList, "FailedData.json")
 	fmt.Println("Persistence file end")
-
+	buildCheckData(result)
 	fmt.Println("Process completed. Please reference [TaxInsuranceMetaData.json] and [FailedData.json].")
+}
+
+func buildCheckData(data model.TaxInsurance) {
+	insurceDataList := data.InsuranceParameterList
+	var result []model.InsuranceParameter
+	MaxSuffix := "Max"
+	MinSuffix := "Min"
+
+	for _, item := range insurceDataList {
+		for _, propertyName := range model.LookupTypeIdList {
+			if strings.Index(propertyName, "Base") > -1 {
+				fullPropertyName1 := fmt.Sprintf(propertyName, MaxSuffix)
+				fullPropertyName2 := fmt.Sprintf(propertyName, MinSuffix)
+				maxValue := reflect.ValueOf(&item).Elem().FieldByName(fullPropertyName1).Float()
+				minValue := reflect.ValueOf(&item).Elem().FieldByName(fullPropertyName2).Float()
+				if minValue > maxValue || minValue > 100000 || maxValue > 100000 {
+					result = append(result, item)
+					break
+				}
+			}
+		}
+	}
+	persistenceFileByJsonFormat(result, "needCheckThisResult.json")
 }

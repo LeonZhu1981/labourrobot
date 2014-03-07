@@ -51,7 +51,6 @@ func Test_NewResolver_CommonRate_Resolve(t *testing.T) {
 		if companyRate != 0.20 || personalRate != 0.08 {
 			t.Error("test failed")
 		}
-
 	}
 }
 
@@ -102,6 +101,13 @@ func Test_NewResolver_CommonBase_Resolve(t *testing.T) {
 			t.Error("test failed")
 		}
 
+		maxRate, minRate, _ = r1.Resolve("缴费基数:1600<br>缴费基数(上下限):下限1600上限4260")
+		if maxRate != 4260 || minRate != 1600 {
+			t.Log(maxRate)
+			t.Log(minRate)
+			t.Error("test failed")
+		}
+
 		maxRate, minRate, _ = r1.Resolve("缴费基数:2080元（固定值）<br/>缴费基数(上下限):无上下限")
 		if maxRate != 0 || minRate != 0 {
 			t.Error("test failed")
@@ -117,6 +123,11 @@ func Test_NewResolver_CommonBase_Resolve(t *testing.T) {
 			t.Error("test failed")
 		}
 
+		maxRate, minRate, _ = r1.Resolve("缴费基数:上限8195元、下限800元<br/>缴费基数(上下限):1967元")
+		if maxRate != 8195 || minRate != 800 {
+			t.Error("test failed")
+		}
+
 		maxRate, minRate, _ = r1.Resolve("缴费基数:2600<br/>缴费基数(上下限):下限2600")
 		if maxRate != 2600 || minRate != 2600 {
 			t.Error("test failed")
@@ -128,7 +139,7 @@ func Test_NewResolver_CommonBase_Resolve(t *testing.T) {
 		}
 
 		maxRate, minRate, _ = r1.Resolve("缴费基数:1200元<br/>缴费基数(上下限):无上限、下限1200元")
-		if maxRate != 1200 || minRate != 0 {
+		if maxRate != 1200 || minRate != 1200 {
 			t.Error("test failed")
 		}
 
@@ -137,13 +148,8 @@ func Test_NewResolver_CommonBase_Resolve(t *testing.T) {
 			t.Error("test failed")
 		}
 
-		maxRate, minRate, _ = r1.Resolve("缴费基数:上限8195元、下限800元<br/>缴费基数(上下限):1967元")
-		if maxRate != 8195 || minRate != 0 {
-			t.Error("test failed")
-		}
-
 		maxRate, minRate, _ = r1.Resolve("缴费基数:<br/>缴费基数(上下限):下限800上限无")
-		if maxRate != 800 || minRate != 0 {
+		if maxRate != 800 || minRate != 800 {
 			t.Error("test failed")
 		}
 
@@ -196,6 +202,37 @@ func Test_NewResolver_CommonBase_Resolve(t *testing.T) {
 
 		maxRate, minRate, _ = r1.Resolve("缴费基数:2138元<br/>缴费基数(上下限):固定值2138元")
 		if maxRate != 2138 || minRate != 2138 {
+			t.Error("test failed")
+		}
+
+		maxRate, minRate, _ = r1.Resolve("缴费基数:<br>缴费基数(上下限):最高标准将由2009年的1512元上调至1840元")
+		if maxRate != 1840 || minRate != 1840 {
+			t.Error("test failed")
+		}
+
+		maxRate, minRate, _ = r1.Resolve("缴费基数:<br>缴费基数(上下限):单位和职工住房公积金月缴存额下限各为40.50元；市区单位和职工住房公积金月缴存额上限各为2392元，开平市、台山市、鹤山市及恩平市单位和职工住房公积金月缴存额上限各为2025元")
+		if maxRate != 2392 || minRate != 40.50 {
+			t.Error("test failed")
+		}
+
+		maxRate, minRate, _ = r1.Resolve("缴费基数:<br>缴费基数(上下限):无最高上限，最低下限为1581元")
+		if maxRate != 1581 || minRate != 1581 {
+			t.Error("test failed")
+		}
+
+		maxRate, minRate, _ = r1.Resolve("缴费基数:<br>缴费基数(上下限):下限800上限无")
+		if maxRate != 800 || minRate != 800 {
+			t.Error("test failed")
+		}
+
+		maxRate, minRate, _ = r1.Resolve("缴费基数:1294 <br>缴费基数(上下限):1413.6元-9090元 ")
+		if maxRate != 9090 || minRate != 1413.6 {
+			t.Error("test failed")
+		}
+
+		maxRate, minRate, _ = r1.Resolve("缴费基数:1083 <br/>缴费基数(上下限):1083~8277 ")
+
+		if maxRate != 8277 || minRate != 1083 {
 			t.Error("test failed")
 		}
 	}
@@ -294,6 +331,11 @@ func Test_NewResolver_MaternityRate_Resolve(t *testing.T) {
 		t.Error("test failed")
 	}
 
+	companyRate, personalRate, _ = r1.Resolve("单位缴费:0.7%")
+	if companyRate != 0.007 || personalRate != 0.00 {
+		t.Error("test failed")
+	}
+
 	companyRate, personalRate, _ = r1.Resolve("单位缴费:包含在医疗保险内，不单独缴纳生育保险")
 	if companyRate != 0.00 || personalRate != 0.00 {
 		t.Error("test failed")
@@ -362,7 +404,7 @@ func Test_NewResolver_WorkInjuryRate_Resolve(t *testing.T) {
 		}
 		companyRate, personalRate, _ = r1.Resolve("单位缴费:1.3%、2.1%、2.9%")
 
-		if companyRate != 0.029000001 || personalRate != 0.00 {
+		if companyRate != 0.029 || personalRate != 0.00 {
 			t.Error("test failed")
 		}
 	}

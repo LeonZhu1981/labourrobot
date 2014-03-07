@@ -55,6 +55,7 @@ type InsuranceParameter struct {
 	HousingFundMaxBase          float32
 	HousingFundMinBase          float32
 	IsProvince                  bool `json:"-"`
+	//IsProvince bool
 }
 
 type TaxInsurance struct {

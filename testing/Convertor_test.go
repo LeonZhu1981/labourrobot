@@ -2,11 +2,11 @@ package testing
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"labourrobot/convertor"
 	"labourrobot/model"
-	//"sort"
-	//"strings"
+	"reflect"
 	"testing"
 )
 
@@ -24,6 +24,38 @@ var (
 		"3":  "MaternityRate%s",
 		"22": "HousingFund%sBase",
 		"14": "HousingFundRate%s",
+	}
+
+	defaultData = model.InsuranceParameter{
+		ProvinceName:                "全国平均",
+		ProvinceShortName:           "QuanGuo",
+		CityName:                    "全国平均",
+		CityShortName:               "QuanGuo",
+		EffectTime:                  "2013/7/1",
+		PensionRateByCompany:        0.2,
+		PensionRateByIndividual:     0.08,
+		PensionMaxBase:              15669,
+		PensionMinBase:              2089,
+		JoblessRateByCompany:        0.01,
+		JoblessRateByIndividual:     0.002,
+		JoblessMaxBase:              15669,
+		JoblessMinBase:              2089,
+		MedicalRateByCompany:        0.1,
+		MedicalRateByIndividual:     0.02,
+		MedicalMaxBase:              15669,
+		MedicalMinBase:              3134,
+		WorkInjuryRateByCompany:     0.005,
+		WorkInjuryRateByIndividual:  0,
+		WorkInjuryMaxBase:           15669,
+		WorkInjuryMinBase:           3134,
+		MaternityRateByCompany:      0.008,
+		MaternityRateByIndividual:   0,
+		MaternityMaxBase:            15669,
+		MaternityMinBase:            3134,
+		HousingFundRateByCompany:    0.08,
+		HousingFundRateByIndividual: 0.12,
+		HousingFundMaxBase:          15669,
+		HousingFundMinBase:          1400,
 	}
 )
 
@@ -91,17 +123,17 @@ func Test_BuildGroupedAndApplyProvinceInsuranceParameter(t *testing.T) {
 		&model.TaxInsuranceMetaData{CityName: "上海", TypeID: joblessBaseTypeID, DataBody: "", Data1: 8000, Data2: 2000, EffectTime: "2013/7/1"},
 	}
 
-	ret := convertor.BuildGroupedAndApplyProvinceInsuranceParameter(metaDataList, provinceCityList)
+	ret := convertor.BuildGroupedAndApplyProvinceInsuranceParameter(metaDataList, provinceCityList, defaultData)
 	if len(ret) != 3 {
 		t.Errorf("The result slice len is not 3. the actual value is: %f", len(ret))
 	}
-	if ret[0].CityName != "广州" {
+	if ret[0].CityName != "成都" {
 		t.Errorf("The result city name is not 广州. the actual value is: %s", ret[0].CityName)
 	}
 	if ret[0].PensionRateByCompany != 0.20 || ret[0].PensionRateByIndividual != 0.10 {
 		t.Errorf("PensionRateByCompany or PensionRateByIndividual. the actual value is: %f or %f", ret[0].PensionRateByCompany, ret[0].PensionRateByIndividual)
 	}
-	if ret[0].CityShortName != "GuangZhou" {
+	if ret[0].CityShortName != "ChengDu" {
 		t.Errorf("CityShortName. the actual value is: %s", ret[0].CityShortName)
 	}
 
@@ -109,7 +141,7 @@ func Test_BuildGroupedAndApplyProvinceInsuranceParameter(t *testing.T) {
 		t.Errorf("JoblessRateByCompany or JoblessRateByIndividual. the actual value is: %f or %f", ret[0].JoblessRateByCompany, ret[0].JoblessRateByIndividual)
 	}
 
-	if ret[0].HousingFundRateByCompany != 0.07 || ret[0].HousingFundRateByIndividual != 0.07 {
+	if ret[0].HousingFundRateByCompany != 0.12 || ret[0].HousingFundRateByIndividual != 0.12 {
 		t.Errorf("HousingFundRateByCompany or HousingFundRateByIndividual. the actual value is: %f or %f", ret[0].HousingFundRateByCompany, ret[0].HousingFundRateByIndividual)
 	}
 
@@ -123,19 +155,49 @@ func Test_BuildGroupedAndApplyProvinceInsuranceParameter(t *testing.T) {
 	if ret[2].JoblessMaxBase != 8000 || ret[2].JoblessMinBase != 2000 {
 		t.Errorf("JoblessMaxBase or JoblessMinBase. the actual value is: %f or %f", ret[2].JoblessMaxBase, ret[2].JoblessMinBase)
 	}
+	assertHasZeroRate(ret, t)
 }
 
-func Test_Sort(t *testing.T) {
-	testData1 := "a"
-	testData2 := "b"
-	testData3 := "c"
+func Test_ApplyMissingInsuranceParameter(t *testing.T) {
+	testData := []model.InsuranceParameter{
+		model.InsuranceParameter{ProvinceName: "四川", CityName: "成都", HousingFundRateByIndividual: 0.07, PensionRateByIndividual: 0.00, JoblessMaxBase: 0.00},
+		model.InsuranceParameter{ProvinceName: "四川", CityName: "四川", HousingFundRateByIndividual: 0.06, PensionRateByIndividual: 1000, IsProvince: true},
+	}
 
-	t.Error(testData1 < testData2)
-	t.Error(testData3 < testData2)
+	result := convertor.ApplyMissingInsuranceParameter(testData, defaultData)
 
-	// byteArray := []byte(testData1)
-	// //byteArray2 := []byte(testData2)
-	// for _, v := range byteArray {
-	// 	t.Error(v)
-	// }
+	if len(result) != 1 {
+		t.Errorf("test failed: the length is: %d", len(result))
+	}
+
+	item := result[0]
+	if item.HousingFundRateByIndividual != 0.07 {
+		t.Errorf("test failed: the length is: %f", item.HousingFundRateByIndividual)
+	}
+	if item.PensionRateByIndividual != 1000 {
+		t.Errorf("test failed: the length is: %f", item.PensionRateByIndividual)
+	}
+	if item.JoblessMaxBase != 15669 {
+		t.Errorf("test failed: the length is: %f", item.JoblessMaxBase)
+	}
+	if item.JoblessMinBase != 2089 {
+		t.Errorf("test failed: the length is: %f", item.JoblessMinBase)
+	}
+	assertHasZeroRate(result, t)
+}
+
+func assertHasZeroRate(testDataList []model.InsuranceParameter, t *testing.T) {
+	for _, item := range testDataList {
+		val := reflect.ValueOf(&item).Elem()
+		for i := 0; i < val.NumField(); i++ {
+			if val.Field(i).Kind().String() == "float32" {
+				fieldValue := val.Field(i).Interface()
+				rateValue, _ := fieldValue.(float32)
+				fieldName := val.Type().Field(i).Name
+				if rateValue == 0.00 && fieldName != "WorkInjuryRateByIndividual" && fieldName != "MaternityRateByIndividual" {
+					t.Error(fmt.Sprintf("City Name:%s, fieldValue: %f, fieldName: %s", item.CityName, rateValue, fieldName))
+				}
+			}
+		}
+	}
 }

@@ -6,7 +6,6 @@ import (
 	"github.com/axgle/pinyin"
 	"labourrobot/model"
 	"reflect"
-	//"sort"
 	"strings"
 )
 
@@ -17,7 +16,7 @@ const (
 	MinSuffix        = "Min"
 )
 
-func BuildGroupedAndApplyProvinceInsuranceParameter(metaDataList []*model.TaxInsuranceMetaData, provinceCityList []model.ProvinceCityList) []model.InsuranceParameter {
+func BuildGroupedAndApplyProvinceInsuranceParameter(metaDataList []*model.TaxInsuranceMetaData, provinceCityList []model.ProvinceCityList, defaultInsuranceData model.InsuranceParameter) []model.InsuranceParameter {
 	var completedInsuranceParameters []*model.InsuranceParameter
 	var groupedInsuranceParameters []model.InsuranceParameter
 	municipalityList := []string{"北京", "上海", "天津", "重庆"}
@@ -110,6 +109,7 @@ func BuildGroupedAndApplyProvinceInsuranceParameter(metaDataList []*model.TaxIns
 		}
 	}
 	groupedInsuranceParameters = OrderProvinceAndCity(Slice2PointSlice(groupedInsuranceParameters))
+	groupedInsuranceParameters = ApplyMissingInsuranceParameter(groupedInsuranceParameters, defaultInsuranceData)
 	return groupedInsuranceParameters
 }
 
@@ -179,9 +179,6 @@ func OrderProvinceAndCity(metaDataList []*model.InsuranceParameter) []model.Insu
 	orderedList, _ := From(metaDataList).OrderBy(func(this, that T) bool {
 		return this.(*model.InsuranceParameter).CityShortName < that.(*model.InsuranceParameter).CityShortName
 	}).Results()
-	// .OrderBy(func(this, that T) bool {
-	// 	return this.(*model.InsuranceParameter).CityShortName < that.(*model.InsuranceParameter).CityShortName
-	// })
 
 	for _, p := range orderedList {
 		item := p.(*model.InsuranceParameter)
@@ -220,6 +217,57 @@ func OrderProvinceAndCity(metaDataList []*model.InsuranceParameter) []model.Insu
 		results = append(results, result)
 	}
 	return results
+}
+
+func ApplyMissingInsuranceParameter(p []model.InsuranceParameter, defaultInsuranceData model.InsuranceParameter) []model.InsuranceParameter {
+	var result []model.InsuranceParameter
+
+	var provinceDataList []model.InsuranceParameter
+
+	for _, item := range p {
+		if item.IsProvince {
+			provinceDataList = append(provinceDataList, item)
+		}
+	}
+	for _, item := range p {
+		val := reflect.ValueOf(&item).Elem()
+		for _, provinceData := range provinceDataList {
+			if provinceData.ProvinceName == item.ProvinceName {
+				provinceVal := reflect.ValueOf(provinceData)
+				for i := 0; i < val.NumField(); i++ {
+					if val.Field(i).Kind().String() == "float32" {
+						fieldValue := val.Field(i).Interface()
+						rateValue, _ := fieldValue.(float32)
+						provinceFieldValue := provinceVal.Field(i).Interface()
+						provinceRateValue, _ := provinceFieldValue.(float32)
+						if rateValue == 0.00 && provinceRateValue > 0.00 {
+							fieldName := val.Type().Field(i).Name
+							val.FieldByName(fieldName).SetFloat(float64(provinceRateValue))
+						}
+					}
+				}
+			}
+		}
+		defaultVal := reflect.ValueOf(defaultInsuranceData)
+		for i := 0; i < val.NumField(); i++ {
+			if val.Field(i).Kind().String() == "float32" && item.IsProvince == false {
+				fieldValue := val.Field(i).Interface()
+				rateValue, _ := fieldValue.(float32)
+				defaultFieldValue := defaultVal.Field(i).Interface()
+				defaultRateValue, _ := defaultFieldValue.(float32)
+				fieldName := val.Type().Field(i).Name
+				if rateValue == 0.00 && defaultRateValue > 0.00 {
+					val.FieldByName(fieldName).SetFloat(float64(defaultRateValue))
+				}
+			}
+		}
+
+		if item.IsProvince == false {
+			result = append(result, item)
+		}
+	}
+
+	return result
 }
 
 func PointSlice2Slice(metaDataList []*model.InsuranceParameter) []model.InsuranceParameter {
