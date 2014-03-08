@@ -161,6 +161,7 @@ func main() {
 	persistenceFileByJsonFormat(failedInsuranceList, "FailedData.json")
 	fmt.Println("Persistence file end")
 	buildCheckData(result)
+	fmt.Printf("InsuranceParameterList total count: %d\r\n", len(result.InsuranceParameterList))
 	fmt.Println("Process completed. Please reference [TaxInsuranceMetaData.json] and [FailedData.json].")
 }
 
